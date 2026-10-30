@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import { Menu, X } from 'lucide-react';
 import About from './components/About';
 import Credits from './components/Credits';
@@ -8,7 +8,11 @@ import Hero from './components/Hero';
 import PenguinTracks from './components/PenguinTracks';
 import Schedule from './components/Schedule';
 import Support from './components/Support';
-import { nome } from './config';
+import { nome, imagensExtras } from './config';
+
+const images = [imagensExtras.logo, imagensExtras.pingo, imagensExtras.pingo2];
+
+
 
 const sections = [
   { id: 'sobre', label: 'Sobre' },
@@ -20,13 +24,34 @@ const sections = [
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 3000); // 3 seconds
+
+    return () => clearInterval(interval); // Cleanup
+  }, []);
+
+
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-xl">
       <div className="section-shell flex h-[70px] items-center justify-between">
         <a href="#inicio" className="flex items-center gap-2.5" aria-label={`${nome}, início`} data-testid="link-header-home">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-primary/20 bg-primary/[.08] font-display text-lg font-bold text-primary">C</span>
-          <span className="font-display text-xl font-bold tracking-tight">{nome}<span className="text-primary">.</span></span>
-        </a>
+            
+            <img 
+              src={imagensExtras.logo} 
+              alt={`Logo ${nome}`} 
+              className="h-9 w-9 object-contain" 
+            />
+            
+            {/* O texto do nome e o ponto continuam aqui */}
+            <span className="font-display text-xl font-bold tracking-tight">
+              {nome}<span className="text-primary">.</span>
+            </span>
+          </a>
         <nav className="hidden items-center gap-1 md:flex" aria-label="Navegação principal">
           {sections.map(({ id, label }) => <a key={id} href={`#${id}`} data-testid={`link-nav-${id}`} className="rounded-xl px-3 py-2 text-sm font-bold text-muted-foreground transition hover:bg-muted hover:text-foreground">{label}</a>)}
         </nav>

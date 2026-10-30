@@ -1,7 +1,26 @@
 import { ArrowDown, ArrowUpRight, Radio } from 'lucide-react';
-import { artes, links, nome, statusLive, textos } from '../config';
+import { artes, links, nome, statusLive, textos, imagensExtras } from '../config';
+import { useEffect, useState } from 'react';
+
+const mascotes = [
+  artes.mascote,
+  imagensExtras.pingo,
+  imagensExtras.pingo2,
+];
+
 
 export default function Hero() {
+
+  const [indexMascote, setIndexMascote] = useState(0);
+
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      setIndexMascote((indexAnterior) => (indexAnterior + 1) % mascotes.length);
+    }, 5000); 
+
+    return () => clearInterval(intervalo);
+  }, []);
+
   return (
     <section id="inicio" className="hero-glow relative overflow-hidden">
       <div className="section-shell grid min-h-[690px] items-center gap-8 py-20 md:grid-cols-[1.04fr_.96fr] md:py-24">
@@ -19,10 +38,10 @@ export default function Hero() {
           <p className="mt-7 max-w-lg text-lg leading-relaxed text-muted-foreground md:text-xl" data-testid="text-hero-subtitle">{textos.heroSubtitulo}</p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             <a href={links.twitch} target="_blank" rel="noreferrer" data-testid="link-hero-twitch" className="group inline-flex items-center justify-center gap-3 rounded-2xl bg-primary px-6 py-4 font-extrabold text-primary-foreground transition hover:-translate-y-1 hover:shadow-lg">
-              <Radio size={18} /> {textos.heroCta}<ArrowUpRight size={17} className="transition group-hover:translate-x-1 group-hover:-translate-y-1" />
+              <Radio size={18} /> {textos.heroCta} 
             </a>
             <a href="#horarios" data-testid="link-hero-schedule" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card/75 px-6 py-4 font-extrabold text-foreground transition hover:border-accent/50 hover:bg-muted">
-              Ver horários <ArrowDown size={16} />
+              Ver horários 
             </a>
           </div>
           <div className="mt-12 flex items-center gap-3 text-sm text-muted-foreground">
@@ -37,7 +56,18 @@ export default function Hero() {
           <div className="absolute bottom-[17%] left-[7%] h-2 w-2 rounded-full bg-primary" />
           <div className="relative flex h-[66%] w-[66%] items-center justify-center rounded-[48%] border border-border/70 bg-card shadow-2xl">
             <div className="absolute inset-3 rounded-[48%] border border-white/[.035]" />
-            <img src={artes.mascote} alt={`Mascote do canal de ${nome}`} className="absolute inset-0 h-full w-full rounded-[48%] object-contain p-5" data-testid="img-channel-mascot" onError={(event) => { event.currentTarget.style.display = 'none'; event.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+            <img 
+              key={indexMascote}
+              src={mascotes[indexMascote]} 
+              alt={`Mascote do canal de ${nome}`} 
+              className="absolute inset-0 h-full w-full rounded-[48%] object-contain p-5 transition-opacity duration-500" 
+              data-testid="img-channel-mascot" 
+              onError={(event) => { 
+                event.currentTarget.style.display = 'none'; 
+                event.currentTarget.nextElementSibling?.classList.remove('hidden'); 
+              }} 
+            />
+            
             <div className="hidden px-8 text-center">
               <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-[28px] border border-accent/20 bg-accent/[.07] text-accent">
                 <span className="font-display text-4xl">C</span>
